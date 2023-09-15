@@ -3,5 +3,5 @@
 !.gitattributes
 
 # data folder
-/data
-/lorawan-devices
+data
+lorawan-devices
