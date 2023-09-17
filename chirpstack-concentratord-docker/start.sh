@@ -224,5 +224,4 @@ mv chirpstack-concentratord-${DESIGN} chirpstack-concentratord
 # -----------------------------------------------------------------------------
 # Start concentratord
 # -----------------------------------------------------------------------------
-#./chirpstack-concentratord -c ./concentratord.toml -c ./region.toml -c ./channels.toml
-cat ./concentratord.toml
+./chirpstack-concentratord -c ./concentratord.toml -c ./region.toml -c ./channels.toml

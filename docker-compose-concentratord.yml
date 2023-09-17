@@ -1,0 +1,26 @@
+version: "3"
+
+# ---------------------------------------------------------------------------
+# SERVICES
+# ---------------------------------------------------------------------------
+
+services:
+
+  chirpstack-concentratord:
+    container_name: chirpstack-concentratord-${BAND:-eu868}
+    image: chirpstack-concentratord:latest
+    build:
+      context: chirpstack-concentratord-docker
+      args:
+        ARCH: ${ARCH:-arm64}
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /tmp:/tmp
+    group_add:
+      - "dialout"
+    environment:
+      - MODEL=${MODEL:-RAK5146}
+      - REGION=${BAND:-eu868}
+      - SOCKET_PREFIX=${BAND:-eu868} # so IPC URLs will be ipc:///tmp/concentratord_<band>_*
+
