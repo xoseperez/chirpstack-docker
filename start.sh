@@ -3,10 +3,23 @@
 export ARCH=arm64
 export MODEL=RAK5146
 export BAND=eu868
-export CHIRPSTACK_GATEWAY_BRIDGE_HOSTS=127.0.0.1,localhost,192.168.42.137
-export MQTT_BROKER_HOSTS=127.0.0.1,localhost,192.168.42.137
+export CHIRPSTACK_GATEWAY_BRIDGE_HOSTS=127.0.0.1,localhost
+export MQTT_BROKER_HOSTS=127.0.0.1,localhost
 export API_SECRET=e0A0dkoGQxqdX8R4g3l2XYg/uFGHZy+VGtyov6juszo=
+export NET_ID=000000
 
-docker compose -p chirpstack -f docker-compose.yml -f docker-compose-bridge-udp.yml -f docker-compose-bridge-basicstation.yml up -d
-#docker compose -p chirpstack -f docker-compose.yml -f docker-compose-concentratord.yml -f docker-compose-mqtt-forwarder.yml up -d
-#docker compose -p chirpstack  -f docker-compose.yml -f docker-compose-concentratord.yml -f docker-compose-bridge-concentratord.yml up -d
+declare SERVICES=(
+    chirpstack
+    bridge-udp
+    bridge-basicstation 
+    #concentratord
+    #bridge-concentratord
+    #mqtt-forwarder
+)
+
+FILES=""
+for i in ${!SERVICES[@]}; do
+    FILES="$FILES -f docker-compose-${SERVICES[i]}.yml "
+done
+
+docker compose -p chirpstack $FILES up -d
