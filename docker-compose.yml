@@ -28,6 +28,8 @@ services:
       - REDIS_HOST=redis
       - POSTGRESQL_HOST=postgres
       - API_SECRET=${API_SECRET:-you_must_change_this} # use the output of `openssl rand -base64 32`
+      - ENABLED_REGION=${BAND:-eu868}
+      - NET_ID=000000
     ports:
       - 8080:8080
 
