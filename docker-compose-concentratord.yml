@@ -14,11 +14,13 @@ services:
       args:
         ARCH: ${ARCH:-arm64}
     restart: unless-stopped
-    privileged: true
     volumes:
       - /tmp:/tmp
-    group_add:
-      - "dialout"
+    devices:
+      - /dev/spidev0.0
+      - /dev/gpiochip0
+      - /dev/gpiomem
+    user: "${UID}:${GID}"
     environment:
       - MODEL=${MODEL:-RAK5146}
       - REGION=${BAND:-eu868}

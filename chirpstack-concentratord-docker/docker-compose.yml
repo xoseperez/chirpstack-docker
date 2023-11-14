@@ -15,20 +15,24 @@ services:
 
     container_name: chirpstack-concentratord
     restart: unless-stopped
-    privileged: true
     ipc: host
     network_mode: host      # required to read main interface MAC instead of virtual one, only for sx1301 based concentrators
                             # you don't need this if you set the GATEWAY_EUI manually
     volumes:
       - /tmp:/tmp
     
+    devices:
+      - /dev/ttyACM0
+      #- /dev/spidev0.0
+      - /dev/gpiochip0 
+
     group_add:
       - "dialout"           # provides permissions to access USB concentrators
 
     environment:
 
       # Select the concentrator model (required, either RAK or chirpstack-concentratord naming)
-      MODEL: "RAK5148"
+      MODEL: "RAK7271"
 
       # Select the interface the concentrator uses (defaults to "SPI", "USB" only supported for SX1302/3 devices)
       #INTERFACE: "SPI"
