@@ -1,15 +1,22 @@
 #!/bin/sh
 
 SERVICE_NAME=concentratord
+INFO_FILE="./service-info"
 
 # -----------------------------------------------------------------------------
 # Colors
 # -----------------------------------------------------------------------------
 
-COLOR_INFO="\e[32m" # green
-COLOR_WARNING="\e[33m" # yellow
-COLOR_ERROR="\e[31m" # red
-COLOR_END="\e[0m"
+COLOR_RESET="\e[0m"
+COLOR_RED="\e[31m"
+COLOR_GREEN="\e[32m"
+COLOR_YELLOW="\e[33m"
+COLOR_BLUE="\e[34m"
+COLOR_GREY="\e[37m"
+
+COLOR_INFO=$COLOR_GREEN
+COLOR_WARNING=$COLOR_YELLOW
+COLOR_ERROR=$COLOR_RED
 
 # -----------------------------------------------------------------------------
 # Identify concentrator
@@ -39,7 +46,7 @@ declare -A MODEL_DESIGN=(
 )
 DESIGN=${MODEL_DESIGN[$MODEL]}
 if [[ "$DESIGN" == "" ]]; then
-    echo -e "${COLOR_ERROR}ERROR: Unknown MODEL value ($MODEL). Valid values are: ${!MODEL_DESIGN[@]}${COLOR_END}"
+    echo -e "${COLOR_ERROR}ERROR: Unknown MODEL value ($MODEL). Valid values are: ${!MODEL_DESIGN[@]}"
     exit
 fi
 
@@ -91,7 +98,7 @@ if [[ "$DESIGN" == "sx1301" ]]; then
             GATEWAY_EUI_SOURCE=$(cat /proc/net/dev | tail -n+3 | sort -k2 -nr | head -n1 | cut -d ":" -f1 | sed 's/ //g')
         fi
         if [[ `grep "$GATEWAY_EUI_SOURCE" /proc/net/dev` == "" ]]; then
-            echo -e "${COLOR_ERROR}ERROR: No network interface found. Cannot set gateway EUI.${COLOR_END}"
+            echo -e "${COLOR_ERROR}ERROR: No network interface found. Cannot set gateway EUI."
         fi
         GATEWAY_EUI=$(ip link show $GATEWAY_EUI_SOURCE | awk '/ether/ {print $2}' | awk -F\: '{print $1$2$3"FFFE"$4$5$6}')
 
@@ -100,7 +107,7 @@ if [[ "$DESIGN" == "sx1301" ]]; then
 
     # Check we have an EUI
     if [[ -z ${GATEWAY_EUI} ]] ; then
-        echo -e "${COLOR_ERROR}ERROR: GATEWAY_EUI not set.${COLOR_END}"
+        echo -e "${COLOR_ERROR}ERROR: GATEWAY_EUI not set."
         exit
     fi
 
@@ -167,43 +174,53 @@ fi
 # Info
 # -----------------------------------------------------------------------------
 
-INFO_FILE="./gateway-info"
 rm -f $INFO_FILE
 
 echo -e "#!/bin/sh" > $INFO_FILE
 echo -e "GATEWAY_EUI=\$( ./gateway-id -c ${SOCKET}command  )" >> $INFO_FILE
 echo -e "cat << EOF" >> $INFO_FILE
 
-echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
+echo -e "${COLOR_INFO}" | tee -a $INFO_FILE
 
+echo -e "------------------------------------------------------------------" | tee -a $INFO_FILE
+
+echo -e "ChirpStack" | tee -a $INFO_FILE
 toilet -f future ${SERVICE_NAME} | tee -a $INFO_FILE
-echo "Image maintained by xose.perez@rakwireless.com" | tee -a $INFO_FILE
+echo -e "Concentrator HAL daemon for LoRa gateways" | tee -a $INFO_FILE
 
-echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
- 
+echo -e "------------------------------------------------------------------" | tee -a $INFO_FILE
+
 if [[ "$MODEL" != "$ORIGINAL_MODEL" ]]; then
-echo -e "${COLOR_INFO}Model:          $MODEL ($ORIGINAL_MODEL)${COLOR_END}" | tee -a $INFO_FILE
+echo -e "Model:          $MODEL ($ORIGINAL_MODEL)" | tee -a $INFO_FILE
 else
-echo -e "${COLOR_INFO}Model:          $MODEL${COLOR_END}" | tee -a $INFO_FILE
+echo -e "Model:          $MODEL" | tee -a $INFO_FILE
 fi
-echo -e "${COLOR_INFO}Design:         ${DESIGN}${COLOR_END}" | tee -a $INFO_FILE
-echo -e "${COLOR_INFO}Interface:      $INTERFACE${COLOR_END}" | tee -a $INFO_FILE
+echo -e "Design:         ${DESIGN}" | tee -a $INFO_FILE
+echo -e "Interface:      $INTERFACE" | tee -a $INFO_FILE
 if [[ "$INTERFACE" == "SPI" ]]; then
-echo -e "${COLOR_INFO}Reset GPIO:     $RESET_GPIO${COLOR_END}" | tee -a $INFO_FILE
-echo -e "${COLOR_INFO}Enable GPIO:    $POWER_EN_GPIO${COLOR_END}" | tee -a $INFO_FILE
+echo -e "Reset GPIO:     $RESET_GPIO" | tee -a $INFO_FILE
+echo -e "Enable GPIO:    $POWER_EN_GPIO" | tee -a $INFO_FILE
 fi
 if [[ "$DESIGN" == "sx1301" ]]; then
-echo -e "${COLOR_INFO}Gateway EUI:    $GATEWAY_EUI${COLOR_END}" | tee -a $INFO_FILE
+echo -e "Gateway EUI:    $GATEWAY_EUI" | tee -a $INFO_FILE
 else
-echo -e "${COLOR_INFO}Gateway EUI:    (run $INFO_FILE)${COLOR_END}"
+echo -e "Gateway EUI:    (run $INFO_FILE)"
 fi
-echo -e "${COLOR_INFO}Gateway EUI:    \${GATEWAY_EUI}${COLOR_END}" >> $INFO_FILE
-echo -e "${COLOR_INFO}Region:         $REGION${COLOR_END}" | tee -a $INFO_FILE
-echo -e "${COLOR_INFO}Channels:       $CHANNELS${COLOR_END}" | tee -a $INFO_FILE
-echo -e "${COLOR_INFO}Has GPS:        $HAS_GPS${COLOR_END}" | tee -a $INFO_FILE
+echo -e "Gateway EUI:    \${GATEWAY_EUI}" >> $INFO_FILE
+echo -e "Region:         $REGION" | tee -a $INFO_FILE
+echo -e "Channels:       $CHANNELS" | tee -a $INFO_FILE
+echo -e "Has GPS:        $HAS_GPS" | tee -a $INFO_FILE
 
-echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
-echo -e "EOF" >> $INFO_FILE
+echo -e "------------------------------------------------------------------" | tee -a $INFO_FILE
+
+echo -e "Resources: https://www.chirpstack.io/docs/chirpstack-concentratord" | tee -a $INFO_FILE
+echo -e "           https://github.com/chirpstack/chirpstack-concentratord" | tee -a $INFO_FILE
+
+echo -e "------------------------------------------------------------------" | tee -a $INFO_FILE
+ 
+echo -e "${COLOR_RESET}" | tee -a $INFO_FILE
+
+echo -en "EOF" >> $INFO_FILE
 
 chmod +x $INFO_FILE
 
