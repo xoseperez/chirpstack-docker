@@ -1,5 +1,7 @@
 #!/bin/sh
 
+SERVICE_NAME=concentratord
+
 # -----------------------------------------------------------------------------
 # Colors
 # -----------------------------------------------------------------------------
@@ -152,30 +154,38 @@ fi
 HAS_GPS=${HAS_GPS:-0}
 
 # -----------------------------------------------------------------------------
-# Debug
+# Info
 # -----------------------------------------------------------------------------
 
-echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}"
+INFO_FILE="info.txt"
+rm -f $INFO_FILE
+
+echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
+
+toilet -f future ${SERVICE_NAME} | tee -a $INFO_FILE
+echo "Image maintained by xose.perez@rakwireless.com" | tee -a $INFO_FILE
+
+echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
  
 if [[ "$MODEL" != "$ORIGINAL_MODEL" ]]; then
-echo -e "${COLOR_INFO}Model:          $MODEL ($ORIGINAL_MODEL)${COLOR_END}"
+echo -e "${COLOR_INFO}Model:          $MODEL ($ORIGINAL_MODEL)${COLOR_END}" | tee -a $INFO_FILE
 else
-echo -e "${COLOR_INFO}Model:          $MODEL${COLOR_END}"
+echo -e "${COLOR_INFO}Model:          $MODEL${COLOR_END}" | tee -a $INFO_FILE
 fi
-echo -e "${COLOR_INFO}Design:         ${DESIGN}${COLOR_END}"
-echo -e "${COLOR_INFO}Interface:      $INTERFACE${COLOR_END}"
+echo -e "${COLOR_INFO}Design:         ${DESIGN}${COLOR_END}" | tee -a $INFO_FILE
+echo -e "${COLOR_INFO}Interface:      $INTERFACE${COLOR_END}" | tee -a $INFO_FILE
 if [[ "$INTERFACE" == "SPI" ]]; then
-echo -e "${COLOR_INFO}Reset GPIO:     $RESET_GPIO${COLOR_END}"
-echo -e "${COLOR_INFO}Enable GPIO:    $POWER_EN_GPIO${COLOR_END}"
+echo -e "${COLOR_INFO}Reset GPIO:     $RESET_GPIO${COLOR_END}" | tee -a $INFO_FILE
+echo -e "${COLOR_INFO}Enable GPIO:    $POWER_EN_GPIO${COLOR_END}" | tee -a $INFO_FILE
 fi
 if [[ "$DESIGN" == "sx1301" ]]; then
-echo -e "${COLOR_INFO}Gateway EUI:    $GATEWAY_EUI${COLOR_END}"
+echo -e "${COLOR_INFO}Gateway EUI:    $GATEWAY_EUI${COLOR_END}" | tee -a $INFO_FILE
 fi
-echo -e "${COLOR_INFO}Region:         $REGION${COLOR_END}"
-echo -e "${COLOR_INFO}Channels:       $CHANNELS${COLOR_END}"
-echo -e "${COLOR_INFO}Has GPS:        $HAS_GPS${COLOR_END}"
+echo -e "${COLOR_INFO}Region:         $REGION${COLOR_END}" | tee -a $INFO_FILE
+echo -e "${COLOR_INFO}Channels:       $CHANNELS${COLOR_END}" | tee -a $INFO_FILE
+echo -e "${COLOR_INFO}Has GPS:        $HAS_GPS${COLOR_END}" | tee -a $INFO_FILE
 
-echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}"
+echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
 
 # -----------------------------------------------------------------------------
 # Build configuration

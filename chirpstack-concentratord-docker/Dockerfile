@@ -5,6 +5,13 @@ FROM debian:bullseye-slim
 ARG ARCH
 ARG VERSION=4.3.0
 
+# Dependencies
+RUN export DEBIAN_FRONTEND=noninteractive
+RUN apt update && \
+    apt install -y --no-install-recommends toilet && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+    
 # Switch to working directory for our app
 WORKDIR /opt/chirpstack
 
