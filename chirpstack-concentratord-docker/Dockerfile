@@ -3,7 +3,7 @@ ARG ARCH
 # Base image
 FROM debian:bullseye-slim
 ARG ARCH
-ARG VERSION=4.3.0
+ARG VERSION=4.3.4
 
 # Dependencies
 RUN export DEBIAN_FRONTEND=noninteractive
