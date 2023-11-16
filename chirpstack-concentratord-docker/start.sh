@@ -154,11 +154,25 @@ fi
 HAS_GPS=${HAS_GPS:-0}
 
 # -----------------------------------------------------------------------------
+# IPC SOCKET
+# -----------------------------------------------------------------------------
+
+if [ "$SOCKET_PREFIX" != "" ]; then
+    SOCKET="ipc:///tmp/concentratord_${SOCKET_PREFIX}_"
+else
+    SOCKET="ipc:///tmp/concentratord_"
+fi
+
+# -----------------------------------------------------------------------------
 # Info
 # -----------------------------------------------------------------------------
 
-INFO_FILE="info.txt"
+INFO_FILE="./gateway-info"
 rm -f $INFO_FILE
+
+echo -e "#!/bin/sh" > $INFO_FILE
+echo -e "GATEWAY_EUI=\$( ./gateway-id -c ${SOCKET}command  )" >> $INFO_FILE
+echo -e "cat << EOF" >> $INFO_FILE
 
 echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
 
@@ -180,12 +194,18 @@ echo -e "${COLOR_INFO}Enable GPIO:    $POWER_EN_GPIO${COLOR_END}" | tee -a $INFO
 fi
 if [[ "$DESIGN" == "sx1301" ]]; then
 echo -e "${COLOR_INFO}Gateway EUI:    $GATEWAY_EUI${COLOR_END}" | tee -a $INFO_FILE
+else
+echo -e "${COLOR_INFO}Gateway EUI:    (run $INFO_FILE)${COLOR_END}"
 fi
+echo -e "${COLOR_INFO}Gateway EUI:    \${GATEWAY_EUI}${COLOR_END}" >> $INFO_FILE
 echo -e "${COLOR_INFO}Region:         $REGION${COLOR_END}" | tee -a $INFO_FILE
 echo -e "${COLOR_INFO}Channels:       $CHANNELS${COLOR_END}" | tee -a $INFO_FILE
 echo -e "${COLOR_INFO}Has GPS:        $HAS_GPS${COLOR_END}" | tee -a $INFO_FILE
 
 echo -e "${COLOR_INFO}------------------------------------------------------------------${COLOR_END}" | tee -a $INFO_FILE
+echo -e "EOF" >> $INFO_FILE
+
+chmod +x $INFO_FILE
 
 # -----------------------------------------------------------------------------
 # Build configuration
