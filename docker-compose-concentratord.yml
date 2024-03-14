@@ -20,11 +20,11 @@ services:
       - /dev/spidev0.0
       - /dev/gpiochip0
       - /dev/gpiomem
-    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    user: "${PUID:-1000}:${PGID:-1000}"
     group_add: 
-      - ${GROUP_ID_GPIO:-997}
-      - ${GROUP_ID_I2C:-998}
-      - ${GROUP_ID_SPI:-999}
+      - ${PGID_GPIO:-997}
+      - ${PGID_I2C:-998}
+      - ${PGID_SPI:-999}
     environment:
       - MODEL=${MODEL:-RAK5146}
       - REGION=${BAND:-eu868}
@@ -39,7 +39,7 @@ services:
       - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
       - chirpstack-certificates:/etc/chirpstack-gateway-bridge/certs
       - ipc_folder:/tmp
-    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    user: "${PUID:-1000}:${PGID:-1000}"
     depends_on:
       - chirpstack-concentratord
       - mosquitto

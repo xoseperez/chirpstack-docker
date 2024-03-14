@@ -84,7 +84,7 @@ services:
       - chirpstack-certificates:/chirpstack-certificates/certs
     environment:
       - CHIRPSTACK_GATEWAY_BRIDGE_HOSTS=${CHIRPSTACK_GATEWAY_BRIDGE_HOSTS:-127.0.0.1,localhost}
-      - MQTT_BROKER_HOSTS=${CHIRPSTACK_GATEWAY_BRIDGE_HOSTS:-127.0.0.1,localhost}
+      - MQTT_BROKER_HOSTS=${MQTT_BROKER_HOSTS:-127.0.0.1,localhost}
     command: make
 
 # ---------------------------------------------------------------------------
