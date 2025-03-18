@@ -1,4 +1,4 @@
-version: "3"
+#version: "3"
 
 # ---------------------------------------------------------------------------
 # SERVICES
@@ -52,6 +52,25 @@ services:
       - chirpstack-postgresql:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=root
+    healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres"]
+       interval: 5s
+       timeout: 5s
+       retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: pgadmin
+    restart: unless-stopped
+    volumes:
+      - ./configuration/pgadmin/servers.json:/pgadmin4/servers.json
+    ports:
+      - 8081:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL:-admin@example.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+    depends_on:
+      - postgres
 
   redis:
     container_name: chirpstack-redis
@@ -69,7 +88,7 @@ services:
       - 1883:1883
       - 8883:8883
     volumes: 
-      - ./configuration/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./configuration/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - chirpstack-certificates:/mosquitto/config/certs
 
   # ---------------------------------------------------------------------------
