@@ -6,33 +6,45 @@ version: "3"
 
 services:
 
-  # ---------------------------------------------------------------------------
-  # Local concentratord service
-  # ---------------------------------------------------------------------------
-
   chirpstack-mqtt-forwarder:
     container_name: chirpstack-mqtt-forwarder
-    image: chirpstack-mqtt-forwarder:latest
-    build:
-      context: chirpstack-mqtt-forwarder-docker
-      args:
-        ARCH: ${ARCH:-arm64}
+    image: xoseperez/chirpstack-mqtt-forwarder:latest
     restart: unless-stopped
     volumes:
       - ./configuration/chirpstack-mqtt-forwarder:/etc/chirpstack-mqtt-forwarder
       - chirpstack-certificates:/etc/chirpstack-mqtt-forwader/certs
       - /tmp:/tmp
     environment:
-      - MQTT__TOPIC_PREFI=${BAND:-eu868}
-      - MQTT__SERVER=tcp://127.0.0.1:1883
-      - MQTT__USERNAME=
-      - MQTT__PASSWORD=
+
+      - LOGGING_LEVEL="INFO"
+      #- MQTT_TOPIC_PREFIX=${BAND:-eu868}
+      - MQTT_SERVER=tcp://mosquitto:1883
+      #- MQTT_USERNAME=""
+      #- MQTT_PASSWORD=""
+      #- MQTT_QOS=0
+      #- MQTT_CA_CERT_PATH="/run/secrets/ca.pem"
+      #- MQTT_CLIENT_CERT_PATH="/run/secrets/cert.pem"
+      #- MQTT_CLIENT_KEY_PATH="/run/secrets/key.pem"
+      #- MQTT_JSON="false"
+      #- BACKEND="concentratord"
+      #- BACKEND_SOCKET_NAME="concentratord"
+      #- BACKEND_UDP_BIND="0.0.0.0:1700"
+      #- BACKEND_FILTER_DEVADDR=""
+      #- BACKEND_FILTER_JOINEUI=""
       - MQTT__TLS_CERT=/etc/chirpstack-mqtt-forwarder/certs/chirpstack-mqtt-forwarder/mqtt-broker/mqtt-broker.pem
       - MQTT__TLS_KEY=/etc/chirpstack-mqtt-forwarder/certs/chirpstack-mqtt-forwarder/mqtt-broker/mqtt-broker-key.pem
       - MQTT__CA_CERT=/etc/chirpstack-mqtt-forwarder/certs/ca/ca.pem
       - BACKEND__ENABLED=concentratord
-      - BACKEND__CONCENTRATORD__EVENT_URL=ipc:///tmp/concentratord_${BAND:-eu868}_event # See SOCKET_PREFIX in chirpstack-concentratord service
-      - BACKEND__CONCENTRATORD__COMMAND_URL=ipc:///tmp/concentratord_${BAND:-eu868}_command # See SOCKET_PREFIX in chirpstack-concentratord service
+      - BACKEND__CONCENTRATORD__EVENT_URL=ipc:///tmp/concentratord_event
+      - BACKEND__CONCENTRATORD__COMMAND_URL=ipc:///tmp/concentratord_command
+
+#secrets:
+#  ca.pem:
+#    file: ca.pem
+#  cert.pem:
+#    file: cert.pem
+#  key.pem:
+#    file: key.pem 
 
 volumes:
   chirpstack-certificates:

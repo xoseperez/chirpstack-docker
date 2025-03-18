@@ -1,0 +1,23 @@
+version: "3"
+
+# ---------------------------------------------------------------------------
+# SERVICES
+# ---------------------------------------------------------------------------
+
+services:
+
+  chirpstack-udp-forwarder:
+    container_name: chirpstack-udp-forwarder
+    image: xoseperez/chirpstack-udp-forwarder:latest
+    restart: unless-stopped
+    volumes:
+      - /tmp:/tmp
+    environment:
+      - LOGGING_LEVEL="INFO"
+      #- TTI_TENANT=${TTI_TENANT:-ttn}
+      #- TTI_REGION=${TTI_REGION:-eu1}
+      - SERVER_HOST=${SERVER_HOST:-localhost}
+      - SERVER_PORT=${SERVER_HOST:-1700}
+      - KEEPALIVE_INTERVAL=${KEEPALIVE_INTERVAL:-30}
+      - SOCKET_NAME=${SOCKET_NAME:-concentratord}
+

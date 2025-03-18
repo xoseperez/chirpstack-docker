@@ -1,0 +1,27 @@
+version: "3"
+
+# ---------------------------------------------------------------------------
+# SERVICES
+# ---------------------------------------------------------------------------
+
+services:
+
+  chirpstack-gateway-bridge-concentratord:
+    container_name: chirpstack-bridge-concentratord-${BAND:-eu868}
+    image: chirpstack/chirpstack-gateway-bridge:4
+    restart: unless-stopped
+    command: -c /etc/chirpstack-gateway-bridge/chirpstack-gateway-bridge-concentratord.toml
+    volumes:
+      - /tmp:/tmp
+      - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
+      - chirpstack-certificates:/etc/chirpstack-gateway-bridge/certs
+    user: "${PUID:-1000}:${PGID:-1000}"
+    depends_on:
+      - chirpstack-concentratord
+      - mosquitto
+    environment:
+      - BACKEND__CONCENTRATORD__EVENT_URL=ipc:///tmp/concentratord_event
+      - BACKEND__CONCENTRATORD__COMMAND_URL=ipc:///tmp/concentratord_command
+      - INTEGRATION__MQTT__EVENT_TOPIC_TEMPLATE=${BAND:-eu868}/gateway/{{ .GatewayID }}/event/{{ .EventType }}
+      - INTEGRATION__MQTT__STATE_TOPIC_TEMPLATE=${BAND:-eu868}/gateway/{{ .GatewayID }}/state/{{ .StateType }}
+      - INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE=${BAND:-eu868}/gateway/{{ .GatewayID }}/command/#
