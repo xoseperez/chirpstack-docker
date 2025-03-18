@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "chirpstack",
+            "Group": "ChirpStack",
+            "Port": 5432,
+            "Username": "chirpstack",
+            "Host": "postgres",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+        }
+    }
+}
