@@ -8,6 +8,7 @@ services:
     container_name: chirpstack-udp-forwarder
     image: xoseperez/chirpstack-udp-forwarder:latest
     restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
       - /tmp:/tmp
     environment:

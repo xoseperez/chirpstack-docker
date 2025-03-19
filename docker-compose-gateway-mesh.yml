@@ -9,6 +9,7 @@ services:
     image: xoseperez/chirpstack-gateway-mesh
     restart: unless-stopped
     privileged: true
+    user: "${PUID:-1000}:${PGID:-1000}"
     depends_on:
       - chirpstack-concentratord
     volumes:

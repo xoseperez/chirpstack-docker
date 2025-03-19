@@ -8,13 +8,13 @@ services:
     container_name: chirpstack-mqtt-forwarder
     image: xoseperez/chirpstack-mqtt-forwarder:latest
     restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
-      - ./configuration/chirpstack-mqtt-forwarder:/etc/chirpstack-mqtt-forwarder
       - chirpstack-certificates:/etc/chirpstack-mqtt-forwader/certs
       - /tmp:/tmp
     environment:
 
-      - LOGGING_LEVEL="INFO"
+      - LOGGING_LEVEL=INFO
       #- MQTT_TOPIC_PREFIX=${BAND:-eu868}
       - MQTT_SERVER=tcp://mosquitto:1883
       #- MQTT_USERNAME=""

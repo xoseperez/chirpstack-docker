@@ -22,8 +22,8 @@ services:
     environment:
       - DEBUG=INFO
       - MODEL=${MODEL:-RAK5146}
-      #- INTERFACE=${INTERFACE:-SPI}
-      #- RESET_GPIO=${RESET_GPIO:-17}
+      - INTERFACE=${INTERFACE:-SPI}
+      - RESET_GPIO=${RESET_GPIO:-17}
       #- POWER_EN_GPIO=${POWER_EN_GPIO:-0}
       #- HAS_GPS=${HAS_GPS:-0}
       - REGION=${BAND:-eu868}

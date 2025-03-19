@@ -30,12 +30,12 @@ export PGID_SPI=$(  grep ^spi /etc/group | cut -d':' -f3 )
 
 declare SERVICES=(
     chirpstack
-    bridge-basicstation 
+    #bridge-basicstation 
     #bridge-udp
     #bridge-concentratord
-    #concentratord
+    concentratord
     #gateway-mesh
-    #mqtt-forwarder
+    mqtt-forwarder
     #udp-forwarder
 )
 
