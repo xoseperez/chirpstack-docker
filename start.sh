@@ -4,7 +4,9 @@ INTERFACE=$( tail -n+3 < /proc/net/dev | sort -k2 -nr | head -n1 | cut -d ":" -f
 IP=$( ip a show "$INTERFACE" | awk '/inet / {print $2}' | awk -F/ '{print$1}' )
 
 export ARCH=arm64
-export MODEL=RAK7271
+export MODEL=RAK5146
+export INTERFACE=USB
+export RESET_GPIO=17
 export BAND=eu868
 export HOSTS=127.0.0.1,localhost,$IP
 export CHIRPSTACK_GATEWAY_BRIDGE_HOSTS=$HOSTS
