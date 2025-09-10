@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
+      - ./configuration/chirpstack-mqtt-forwarder:/etc/chirpstack-mqtt-forwarder
       - chirpstack-certificates:/etc/chirpstack-mqtt-forwader/certs
       - /tmp:/tmp
     environment:
